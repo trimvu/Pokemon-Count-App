@@ -1,14 +1,41 @@
-import { StyleSheet, Text, TextInput, View, Pressable } from "react-native";
+import { StyleSheet, Text, TextInput, View, Pressable, TouchableWithoutFeedback, Keyboard } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import axios from "axios";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { Link } from 'expo-router'
 import SpriteViewer from "@/components/SpriteViewer";
 
-
+interface PokeData {
+  cardImage: string;
+  pokedexNumber: number | "N/A";
+}
 
 export default function Index() {
-  const [text, setText] = useState("")
+  const [text, setText] = useState("");
   const [sprite, setSprite] = useState("");
+  const [card, setCard] = useState("");
+  const [pokeData, setPokeData] = useState<PokeData | null>(null);
+
+  // const poke_url = "https://api.pokemontcg.io/v2/cards";
+  
+  // const fetchCardSearch = async () => {
+  //   try {
+  //     const randomNumber = Math.floor(Math.random() * 15756);
+  //     const response = await axios.get(`${poke_url}?pageSize=1&page=${randomNumber}&q=supertype:"Pokémon"`, {
+  //       headers: {
+  //         'X-Api-Key': api_key,
+  //       },
+  //     });
+
+  //     // console.log(response.data.data?.[0]?.images?.large);
+  //     setPokeData({
+  //       cardImage: response.data.data?.[0]?.images?.large,
+  //       pokedexNumber: response.data?.data?.[0]?.nationalPokedexNumbers?.[0] || "N/A",
+  //     });
+  //   } catch (e) {
+  //     console.error(e);
+  //   }
+  // }
 
   const fetchSprite = async () => {
     try {
@@ -21,6 +48,7 @@ export default function Index() {
   }
 
   return (
+    // <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
     <SafeAreaView style={styles.container}>
       <View>
         <Text>Pokémon!</Text>
@@ -35,11 +63,20 @@ export default function Index() {
             Submit
           </Text>
         </Pressable>
+
+        <Link href="/sameNumber" asChild>
+          <Pressable>
+            <Text>
+              Same Number
+            </Text>
+          </Pressable>
+        </Link>
       </View>
       <View>
-        {sprite && (<SpriteViewer imgSource={sprite} />)}
+        {sprite && (<SpriteViewer sprite={sprite} />)}
       </View>
     </SafeAreaView>
+    // </TouchableWithoutFeedback>
   );
 }
 

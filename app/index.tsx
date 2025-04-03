@@ -3,6 +3,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { Link } from 'expo-router'
+import { useRouter } from "expo-router";
 import SpriteViewer from "@/components/SpriteViewer";
 
 interface PokeData {
@@ -15,6 +16,7 @@ export default function Index() {
   const [sprite, setSprite] = useState("");
   const [card, setCard] = useState("");
   const [pokeData, setPokeData] = useState<PokeData | null>(null);
+  const router = useRouter();
 
   // const poke_url = "https://api.pokemontcg.io/v2/cards";
   
@@ -47,6 +49,10 @@ export default function Index() {
     }
   }
 
+  const handleSameNumberDifficulty = (id: number) => {
+    router.push(`/sameNumber/${id}`);
+  }
+
   return (
     // <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
     <SafeAreaView style={styles.container}>
@@ -64,13 +70,27 @@ export default function Index() {
           </Text>
         </Pressable>
 
-        <Link href="/sameNumber" asChild>
-          <Pressable>
+        {/* <Link href={{ pathname: "/sameNumber/[id]", params: { id: "5" } }} asChild> */}
+          <Pressable onPress={() => handleSameNumberDifficulty(5)}>
             <Text>
-              Same Number
+              Same Number - 5
             </Text>
           </Pressable>
-        </Link>
+        {/* </Link> */}
+        {/* <Link href={{ pathname: "/sameNumber/[id]", params: { id: "10" } }} asChild> */}
+          <Pressable onPress={() => handleSameNumberDifficulty(10)}>
+            <Text>
+              Same Number - 10
+            </Text>
+          </Pressable>
+        {/* </Link> */}
+        {/* <Link href={{ pathname: "/sameNumber/[id]", params: { id: "20" } }} asChild> */}
+          <Pressable onPress={() => handleSameNumberDifficulty(20)}>
+            <Text>
+              Same Number - 20
+            </Text>
+          </Pressable>
+        {/* </Link> */}
       </View>
       <View>
         {sprite && (<SpriteViewer sprite={sprite} />)}

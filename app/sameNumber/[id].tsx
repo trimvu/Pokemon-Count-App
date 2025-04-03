@@ -7,15 +7,20 @@ import CardViewer from "@/components/CardViewer";
 import DisplayedNumber from "@/components/DisplayedNumber";
 import EqualNotEqual from "@/components/EqualNotEqual";
 
+import { useLocalSearchParams, useRouter } from "expo-router";
+
 interface PokeData {
     cardImage: string;
     pokedexNumber: number | "N/A";
 }
 
 export default function SameNumber() {
+    const { id } = useLocalSearchParams();
+    // console.log(id);
     const [pokeData, setPokeData] = useState<PokeData | null>(null);
-    const [randomNumber, setRandomNumber] = useState<number>(Math.floor((Math.random() * 20) + 1));
+    const [randomNumber, setRandomNumber] = useState<number>(Math.floor((Math.random() * Number(id)) + 1));
     const [sprite, setSprite] = useState<string>("");
+    const router = useRouter();
 
     // console.log(randomNumber);
 
@@ -45,15 +50,16 @@ export default function SameNumber() {
         try {
             if (!pokeData?.pokedexNumber) return;
 
-            const response = await axios.get(`https://pokeapi.co/api/v2/pokemon/${pokeData?.pokedexNumber}`)
-            // console.log(response.data.sprites.front_default);
-            // setSprite(response.data?.sprites?.other?.showdown?.front_default)
-            setSprite(response.data?.sprites?.front_default)
-
             if (pokeData?.pokedexNumber === 'N/A') {
                 const response = await axios.get(`https://pokeapi.co/api/v2/item/4/`)
                 setSprite(response.data?.sprites?.default);
+            } else {
+                const response = await axios.get(`https://pokeapi.co/api/v2/pokemon/${pokeData?.pokedexNumber}`)
+                // console.log(response.data.sprites.front_default);
+                // setSprite(response.data?.sprites?.other?.showdown?.front_default)
+                setSprite(response.data?.sprites?.front_default)
             }
+
         } catch (e) {
             console.error(e);
         }
@@ -68,15 +74,15 @@ export default function SameNumber() {
     }, [pokeData?.pokedexNumber]);
 
     const coinFlip = () => {
-        return Math.random() < 0.5 ? "heads" : "tails";
+        return (Math.random() < 0.50) ? "heads" : "tails";
     }
 
     const generateRandom = () => {
-        return Math.floor((Math.random() * 20) + 1);
+        return Math.floor((Math.random() * Number(id)) + 1);
     }
 
     const chooseNumber = () => {
-        let flip = coinFlip();
+        const flip = coinFlip();
         console.log(flip);
         if (flip === "heads") {
             return randomNumber;
@@ -95,10 +101,34 @@ export default function SameNumber() {
 
     useEffect(() => {
         setDisplayNumber(chooseNumber());
-    }, [])
+    }, [randomNumber])
 
-    const gameLogic = () => {
-        alert("HI!")
+    const reset = () => {
+        fetchRandomCard();
+        const newRandom = generateRandom();
+        console.log("new random", newRandom);
+        setRandomNumber(newRandom);
+        const newDisplay = chooseNumber();
+        console.log("new display", newDisplay);
+        setDisplayNumber(newDisplay);
+    }
+
+    const gameLogicCheck = () => {
+        if (displayNubmer === randomNumber) {
+            alert("Correct!");
+        } else {
+            alert(`Incorrect! Actual count ${randomNumber}.`);
+        }
+        reset()
+    }
+
+    const gameLogicClose = () => {
+        if (displayNubmer !== randomNumber) {
+            alert("Correct!");
+        } else {
+            alert("They are actually the same!");
+        }
+        reset()
     }
 
     return (
@@ -115,8 +145,8 @@ export default function SameNumber() {
                 <View style={styles.footerContainer}>
                     <DisplayedNumber displayNumber={displayNubmer} />
                     <View style={styles.optionsRow}>
-                        <EqualNotEqual borderColor="#FF0000" backgroundColor="#FF3131" iconName="close" onPress={gameLogic} />
-                        <EqualNotEqual borderColor="#008000" backgroundColor="#39FF14" iconName="check" onPress={gameLogic} />
+                        <EqualNotEqual borderColor="#FF0000" backgroundColor="#FF3131" iconName="close" onPress={gameLogicClose} />
+                        <EqualNotEqual borderColor="#008000" backgroundColor="#39FF14" iconName="check" onPress={gameLogicCheck} />
                     </View>
                 </View>
             </View>

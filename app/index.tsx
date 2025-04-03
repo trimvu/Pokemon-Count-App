@@ -1,10 +1,11 @@
-import { StyleSheet, Text, TextInput, View, Pressable, TouchableWithoutFeedback, Keyboard } from "react-native";
+import { StyleSheet, Text, TextInput, View, Pressable, TouchableWithoutFeedback, Keyboard, Modal, Image } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { Link } from 'expo-router'
 import { useRouter } from "expo-router";
 import SpriteViewer from "@/components/SpriteViewer";
+import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 
 interface PokeData {
   cardImage: string;
@@ -16,10 +17,11 @@ export default function Index() {
   const [sprite, setSprite] = useState("");
   const [card, setCard] = useState("");
   const [pokeData, setPokeData] = useState<PokeData | null>(null);
+  const [modalVisible, setModalVisible] = useState<boolean>(false);
   const router = useRouter();
 
   // const poke_url = "https://api.pokemontcg.io/v2/cards";
-  
+
   // const fetchCardSearch = async () => {
   //   try {
   //     const randomNumber = Math.floor(Math.random() * 15756);
@@ -57,8 +59,11 @@ export default function Index() {
     // <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
     <SafeAreaView style={styles.container}>
       <View>
-        <Text>Pokémon!</Text>
-        <TextInput
+        {/* <Text style={styles.titleText}>Pokémon Count!</Text> */}
+        <Image 
+          source={require('@/assets/images/pokemon-count-logo.png')}
+        />
+        {/* <TextInput
           style={styles.input}
           placeholder="Enter a Pokémon!"
           value={text}
@@ -68,29 +73,95 @@ export default function Index() {
           <Text>
             Submit
           </Text>
+        </Pressable> */}
+
+        {/* Same Number Modal */}
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={modalVisible}
+          onRequestClose={() => {
+            setModalVisible(!modalVisible);
+          }}
+        >
+          <View style={styles.centeredView}>
+            <View style={styles.modalView}>
+              <Text style={styles.modalText}>Select the game difficulty: </Text>
+              <Pressable
+                style={[styles.button, styles.buttonDifficulty]}
+                onPress={() => {
+                  handleSameNumberDifficulty(5);
+                  setModalVisible(!modalVisible);
+                }}
+              >
+                <Text style={styles.textStyle}>
+                  Easy
+                </Text>
+              </Pressable>
+              <Pressable
+                style={[styles.button, styles.buttonDifficulty]}
+                onPress={() => {
+                  handleSameNumberDifficulty(10);
+                  setModalVisible(!modalVisible);
+                }}
+              >
+                <Text style={styles.textStyle}>
+                  Normal
+                </Text>
+              </Pressable>
+              <Pressable
+                style={[styles.button, styles.buttonDifficulty]}
+                onPress={() => {
+                  handleSameNumberDifficulty(20);
+                  setModalVisible(!modalVisible);
+                }}
+              >
+                <Text style={styles.textStyle}>
+                  Hard
+                </Text>
+              </Pressable>
+              <Pressable
+                style={[styles.button, { backgroundColor: "#FF3131" }]}
+                onPress={() => {
+                  setModalVisible(!modalVisible);
+                }}
+              >
+                <Text style={styles.textStyle}>
+                  Cancel
+                </Text>
+              </Pressable>
+            </View>
+          </View>
+        </Modal>
+
+        {/* Same Number Modal Button */}
+        <Pressable
+          style={[styles.button, { alignItems: "center", backgroundColor: "#FF0000" }]}
+          onPress={() => setModalVisible(true)}
+        >
+          <MaterialCommunityIcons name="equal-box" size={38} color={"#FFF"} />
+          <Text style={styles.textStyle}>Same Number?</Text>
         </Pressable>
 
-        {/* <Link href={{ pathname: "/sameNumber/[id]", params: { id: "5" } }} asChild> */}
-          <Pressable onPress={() => handleSameNumberDifficulty(5)}>
-            <Text>
-              Same Number - 5
-            </Text>
-          </Pressable>
-        {/* </Link> */}
-        {/* <Link href={{ pathname: "/sameNumber/[id]", params: { id: "10" } }} asChild> */}
-          <Pressable onPress={() => handleSameNumberDifficulty(10)}>
-            <Text>
-              Same Number - 10
-            </Text>
-          </Pressable>
-        {/* </Link> */}
-        {/* <Link href={{ pathname: "/sameNumber/[id]", params: { id: "20" } }} asChild> */}
-          <Pressable onPress={() => handleSameNumberDifficulty(20)}>
-            <Text>
-              Same Number - 20
-            </Text>
-          </Pressable>
-        {/* </Link> */}
+        {/* Multiple Choice Modal */}
+
+        {/* Multiple Choice Modal Button */}
+        <Pressable
+          style={[styles.button, { alignItems: "center", backgroundColor: "#3B4CCA" }]}
+          onPress={() => setModalVisible(true)}
+        >
+          <MaterialCommunityIcons name="numeric-4-box-multiple" size={38} color={"#FFF"} />
+          <Text style={styles.textStyle}>Multiple Choice</Text>
+        </Pressable>
+
+        {/* Search Button */}
+        <Pressable
+          style={[styles.button, { alignItems: "center", backgroundColor: "#FFDE00" }]}
+          onPress={() => setModalVisible(true)}
+        >
+          <MaterialCommunityIcons name="toy-brick-search" size={38} color={"#FFF"} />
+          <Text style={styles.textStyle}>Search</Text>
+        </Pressable>
       </View>
       <View>
         {sprite && (<SpriteViewer sprite={sprite} />)}
@@ -106,8 +177,53 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
+  titleText: {
+    textAlign: 'center',
+    fontSize: 33,
+  },
   input: {
     borderColor: "black",
     borderWidth: 1,
+  },
+  centeredView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: 'white',
+    borderRadius: 20,
+    padding: 35,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  button: {
+    borderRadius: 20,
+    padding: 10,
+    elevation: 2,
+    margin: 10,
+  },
+  buttonOpen: {
+    backgroundColor: '#F194FF',
+  },
+  buttonDifficulty: {
+    backgroundColor: '#2196F3',
+  },
+  textStyle: {
+    color: 'white',
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  modalText: {
+    marginBottom: 15,
+    textAlign: 'center',
   },
 })

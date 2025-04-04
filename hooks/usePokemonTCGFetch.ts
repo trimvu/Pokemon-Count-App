@@ -16,12 +16,14 @@ export default function usePokemonTCGFetch() {
 
     const fetchRandomCard = useCallback(async () => {
         try {
-            let random = Math.floor(Math.random() * 15756);
+            let random = Math.floor(Math.random() * 15924);
             const response = await axios.get(`${poke_url}?pageSize=1&page=${random}&q=supertype:"Pokémon"`, {
                 headers: {
                     'X-Api-Key': api_key,
                 },
             });
+
+            // console.log(response);
 
             setResponse({
                 cardImage: response.data.data?.[0]?.images?.large,

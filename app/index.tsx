@@ -163,9 +163,9 @@ export default function Index() {
           <Text style={styles.textStyle}>Search</Text>
         </Pressable>
       </View>
-      <View>
+      {/* <View>
         {sprite && (<SpriteViewer sprite={sprite} />)}
-      </View>
+      </View> */}
     </SafeAreaView>
     // </TouchableWithoutFeedback>
   );

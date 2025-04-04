@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, ActivityIndicator } from "react-native";
+import { StyleSheet, Text, View, ActivityIndicator, Pressable, Modal } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useEffect, useState } from "react";
 import SpriteViewer from "@/components/SpriteViewer";
@@ -12,11 +12,13 @@ import { useLocalSearchParams } from "expo-router";
 export default function SameNumber() {
     const { id } = useLocalSearchParams();
     const [randomNumber, setRandomNumber] = useState<number>(Math.floor((Math.random() * Number(id)) + 1));
+    const [modalVisible, setModalVisible] = useState<boolean>(false);
+    const [modalStatus, setModalStatus] = useState<'correct' | 'incorrect-1' | 'incorrect-2'>('correct');
 
-    const { 
-        isLoading: isPokemonTCGLoading, 
-        error: pokemonTCGError, 
-        response: pokemonTCGResponse, 
+    const {
+        isLoading: isPokemonTCGLoading,
+        error: pokemonTCGError,
+        response: pokemonTCGResponse,
         refetch: refetchPokemonTCG,
     } = usePokemonTCGFetch();
     const {
@@ -59,29 +61,36 @@ export default function SameNumber() {
         const newRandom = generateRandom();
         setRandomNumber(newRandom);
         const newDisplay = chooseNumber();
-        console.log("new display", newDisplay);
+        // console.log("new display", newDisplay);
+        setDisplayNumber(newDisplay);
     }
 
     const gameLogicCheck = () => {
         if (displayNubmer === randomNumber) {
-            alert("Correct!");
+            setModalStatus('correct');
+            // alert("Correct!");
         } else {
-            alert(`Incorrect! Actual count ${randomNumber}.`);
+            // alert(`Incorrect! Actual count ${randomNumber}.`);
+            setModalStatus('incorrect-1');
         }
+        setModalVisible(true);
         reset()
     }
 
     const gameLogicClose = () => {
         if (displayNubmer !== randomNumber) {
-            alert("Correct!");
+            // alert("Correct!");
+            setModalStatus('correct');
         } else {
-            alert("They are actually the same!");
+            // alert("They are actually the same!");
+            setModalStatus('incorrect-2');
         }
+        setModalVisible(true);
         reset()
     }
 
     if (isPokemonTCGLoading || isPokeAPILoading) {
-        return <ActivityIndicator size="large" />
+        return <ActivityIndicator size="large" color="#00ff00" />
     }
 
     if (pokemonTCGError || pokeAPIError) {
@@ -99,9 +108,38 @@ export default function SameNumber() {
                 <CardViewer cardImg={pokemonTCGResponse?.cardImage} />
                 <View style={styles.spriteContainer}>
                     {Array.from({ length: randomNumber }).map((_, index) => (
-                        <SpriteViewer key={index} sprite={pokeAPIResponse} />
+                        <SpriteViewer key={index} sprite={pokeAPIResponse} imgWidth={50} imgHeight={50} />
                     ))}
                 </View>
+                <Modal
+                    animationType="none"
+                    transparent={true}
+                    visible={modalVisible}
+                    onRequestClose={() => {
+                        setModalVisible(!modalVisible);
+                    }}
+                >
+                    <View style={styles.centeredView}>
+                        <View style={styles.modalView}>
+                            <Text style={styles.modalText}>
+                                {modalStatus === 'correct' && "Correct!"}
+                                {modalStatus === 'incorrect-1' && `Incorrect! Actual count ${randomNumber}.`}
+                                {modalStatus === 'incorrect-2' && "They are actually the same!"}
+                            </Text>
+                            {modalStatus === 'correct' ? <SpriteViewer sprite="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/showdown/133.gif" imgWidth={100} imgHeight={100} /> : <SpriteViewer sprite="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/showdown/back/133.gif" imgWidth={100} imgHeight={100} />}
+                            <Pressable
+                                style={[styles.button, { backgroundColor: "#00FF00" }]}
+                                onPress={() => {
+                                    setModalVisible(!modalVisible);
+                                }}
+                            >
+                                <Text style={styles.textStyle}>
+                                    Next
+                                </Text>
+                            </Pressable>
+                        </View>
+                    </View>
+                </Modal>
                 <View style={styles.footerContainer}>
                     <DisplayedNumber displayNumber={displayNubmer} />
                     <View style={styles.optionsRow}>
@@ -134,5 +172,42 @@ const styles = StyleSheet.create({
     },
     optionsRow: {
         flexDirection: "row",
+    },
+    centeredView: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    modalView: {
+        margin: 20,
+        backgroundColor: 'white',
+        borderRadius: 20,
+        padding: 35,
+        paddingHorizontal: 135,
+        paddingVertical: 100,
+        alignItems: 'center',
+        shadowColor: '#000',
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 4,
+        elevation: 5,
+    },
+    button: {
+        borderRadius: 20,
+        padding: 10,
+        elevation: 2,
+        margin: 10,
+    },
+    modalText: {
+        marginBottom: 15,
+        textAlign: 'center',
+    },
+    textStyle: {
+        color: 'white',
+        fontWeight: 'bold',
+        textAlign: 'center',
     },
 })

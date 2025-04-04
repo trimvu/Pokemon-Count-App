@@ -1,6 +1,5 @@
-import { StyleSheet, Text, TextInput, View, Pressable, TouchableWithoutFeedback, Keyboard, ActivityIndicator } from "react-native";
+import { StyleSheet, Text, View, ActivityIndicator } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import axios from "axios";
 import { useEffect, useState } from "react";
 import SpriteViewer from "@/components/SpriteViewer";
 import CardViewer from "@/components/CardViewer";
@@ -8,21 +7,12 @@ import DisplayedNumber from "@/components/DisplayedNumber";
 import AnswerButton from "@/components/AnswerButton";
 import usePokemonTCGFetch from "@/hooks/usePokemonTCGFetch";
 import usePokeAPIFetch from "@/hooks/usePokeAPIFetch";
-
-import { useLocalSearchParams, useRouter } from "expo-router";
-
-interface PokeData {
-    cardImage: string;
-    pokedexNumber: number | "N/A";
-}
+import { useLocalSearchParams } from "expo-router";
 
 export default function SameNumber() {
     const { id } = useLocalSearchParams();
-    // console.log(id);
-    const [pokeData, setPokeData] = useState<PokeData | null>(null);
     const [randomNumber, setRandomNumber] = useState<number>(Math.floor((Math.random() * Number(id)) + 1));
-    const [sprite, setSprite] = useState<string>("");
-    const router = useRouter();
+
     const { 
         isLoading: isPokemonTCGLoading, 
         error: pokemonTCGError, 
@@ -35,59 +25,6 @@ export default function SameNumber() {
         response: pokeAPIResponse,
     } = usePokeAPIFetch(pokemonTCGResponse?.pokedexNumber);
 
-    // console.log(randomNumber);
-
-    const poke_url = "https://api.pokemontcg.io/v2/cards";
-    const api_key = process.env.EXPO_PUBLIC_API_KEY;
-
-    // const fetchRandomCard = async () => {
-    //     try {
-    //         let random = Math.floor(Math.random() * 15756);
-    //         const response = await axios.get(`${poke_url}?pageSize=1&page=${random}&q=supertype:"Pokémon"`, {
-    //             headers: {
-    //                 'X-Api-Key': api_key,
-    //             },
-    //         });
-
-    //         // console.log(response.data.data?.[0]?.images?.large);
-    //         setPokeData({
-    //             cardImage: response.data.data?.[0]?.images?.large,
-    //             pokedexNumber: response.data?.data?.[0]?.nationalPokedexNumbers?.[0] || "N/A",
-    //         });
-    //     } catch (e) {
-    //         console.error("error", e);
-    //     }
-    // }
-
-
-
-    // const fetchSprite = async () => {
-    //     try {
-    //         if (!pokemonTCGResponse?.pokedexNumber) return;
-
-    //         if (pokemonTCGResponse?.pokedexNumber === 'N/A') {
-    //             const response = await axios.get(`https://pokeapi.co/api/v2/item/4/`)
-    //             setSprite(response.data?.sprites?.default);
-    //         } else {
-    //             const response = await axios.get(`https://pokeapi.co/api/v2/pokemon/${pokemonTCGResponse?.pokedexNumber}`)
-    //             // console.log(response.data.sprites.front_default);
-    //             // setSprite(response.data?.sprites?.other?.showdown?.front_default)
-    //             setSprite(response.data?.sprites?.front_default)
-    //         }
-
-    //     } catch (e) {
-    //         console.error(e);
-    //     }
-    // }
-
-    // useEffect(() => {
-    //     fetchRandomCard()
-    // }, [])
-
-    // useEffect(() => {
-    //     fetchSprite()
-    // }, [pokemonTCGResponse?.pokedexNumber]);
-
     const coinFlip = () => {
         return (Math.random() < 0.50) ? "heads" : "tails";
     }
@@ -98,7 +35,6 @@ export default function SameNumber() {
 
     const chooseNumber = () => {
         const flip = coinFlip();
-        // console.log(flip);
         if (flip === "heads") {
             return randomNumber;
         } else {
@@ -119,14 +55,11 @@ export default function SameNumber() {
     }, [randomNumber])
 
     const reset = () => {
-        // fetchRandomCard();
         refetchPokemonTCG()
         const newRandom = generateRandom();
-        // console.log("new random", newRandom);
         setRandomNumber(newRandom);
         const newDisplay = chooseNumber();
         console.log("new display", newDisplay);
-        // setDisplayNumber(newDisplay);
     }
 
     const gameLogicCheck = () => {
@@ -169,8 +102,6 @@ export default function SameNumber() {
                         <SpriteViewer key={index} sprite={pokeAPIResponse} />
                     ))}
                 </View>
-                {/* <View><Text>{randomNumber}</Text></View> */}
-                {/* <View>{displayNubmer}</View> */}
                 <View style={styles.footerContainer}>
                     <DisplayedNumber displayNumber={displayNubmer} />
                     <View style={styles.optionsRow}>

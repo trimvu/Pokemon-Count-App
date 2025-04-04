@@ -8,7 +8,7 @@ type Props = {
     onPress: () => void;
 }
 
-export default function EqualNotEqual({ borderColor, backgroundColor, iconName, onPress }: Props) {
+export default function AnswerButton({ borderColor, backgroundColor, iconName, onPress }: Props) {
     return (
         <View style={styles.container}>
             <View style={[styles.circleButtonContainer, { borderColor: borderColor }]}>

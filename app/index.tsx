@@ -6,6 +6,7 @@ import { Link } from 'expo-router'
 import { useRouter } from "expo-router";
 import SpriteViewer from "@/components/SpriteViewer";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
+import TextButton from "@/components/TextButton";
 
 interface PokeData {
   cardImage: string;
@@ -87,49 +88,37 @@ export default function Index() {
           <View style={styles.centeredView}>
             <View style={styles.modalView}>
               <Text style={styles.modalText}>Select the game difficulty: </Text>
-              <Pressable
-                style={[styles.button, styles.buttonDifficulty]}
+              <TextButton 
+                text="Easy" 
+                btnColor="#2196F3" 
                 onPress={() => {
                   handleSameNumberDifficulty(5);
                   setModalVisible(!modalVisible);
-                }}
-              >
-                <Text style={styles.textStyle}>
-                  Easy
-                </Text>
-              </Pressable>
-              <Pressable
-                style={[styles.button, styles.buttonDifficulty]}
+                }} 
+              />
+              <TextButton 
+                text="Normal" 
+                btnColor="#2196F3" 
                 onPress={() => {
                   handleSameNumberDifficulty(10);
                   setModalVisible(!modalVisible);
-                }}
-              >
-                <Text style={styles.textStyle}>
-                  Normal
-                </Text>
-              </Pressable>
-              <Pressable
-                style={[styles.button, styles.buttonDifficulty]}
+                }} 
+              />
+              <TextButton 
+                text="Hard" 
+                btnColor="#2196F3" 
                 onPress={() => {
                   handleSameNumberDifficulty(20);
                   setModalVisible(!modalVisible);
-                }}
-              >
-                <Text style={styles.textStyle}>
-                  Hard
-                </Text>
-              </Pressable>
-              <Pressable
-                style={[styles.button, { backgroundColor: "#FF3131" }]}
+                }} 
+              />
+              <TextButton 
+                text="Cancel" 
+                btnColor="#FF3131" 
                 onPress={() => {
                   setModalVisible(!modalVisible);
-                }}
-              >
-                <Text style={styles.textStyle}>
-                  Cancel
-                </Text>
-              </Pressable>
+                }} 
+              />
             </View>
           </View>
         </Modal>

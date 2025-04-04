@@ -8,6 +8,7 @@ import AnswerButton from "@/components/AnswerButton";
 import usePokemonTCGFetch from "@/hooks/usePokemonTCGFetch";
 import usePokeAPIFetch from "@/hooks/usePokeAPIFetch";
 import { useLocalSearchParams } from "expo-router";
+import TextButton from "@/components/TextButton";
 
 export default function SameNumber() {
     const { id } = useLocalSearchParams();
@@ -127,16 +128,7 @@ export default function SameNumber() {
                                 {modalStatus === 'incorrect-2' && "They are actually the same!"}
                             </Text>
                             {modalStatus === 'correct' ? <SpriteViewer sprite="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/showdown/133.gif" imgWidth={100} imgHeight={100} /> : <SpriteViewer sprite="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/showdown/back/133.gif" imgWidth={100} imgHeight={100} />}
-                            <Pressable
-                                style={[styles.button, { backgroundColor: "#00FF00" }]}
-                                onPress={() => {
-                                    setModalVisible(!modalVisible);
-                                }}
-                            >
-                                <Text style={styles.textStyle}>
-                                    Next
-                                </Text>
-                            </Pressable>
+                            <TextButton text="Next" btnColor="#00FF00" onPress={() => setModalVisible(!modalVisible)} />
                         </View>
                     </View>
                 </Modal>

@@ -61,6 +61,10 @@ export default function Index() {
     router.push(`/multipleChoice/${id}`);
   }
 
+  const handleSearchButton = () => {
+    router.push(`/+not-found`);
+  }
+
   return (
     // <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
     <SafeAreaView style={styles.container}>
@@ -196,7 +200,7 @@ export default function Index() {
         {/* Search Button */}
         <Pressable
           style={[styles.button, { alignItems: "center", backgroundColor: "#FFDE00" }]}
-          onPress={() => setSnModalVisible(true)}
+          onPress={() => handleSearchButton()}
         >
           <MaterialCommunityIcons name="toy-brick-search" size={38} color={"#FFF"} />
           <Text style={styles.textStyle}>Search</Text>

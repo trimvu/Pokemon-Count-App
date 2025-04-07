@@ -18,7 +18,8 @@ export default function Index() {
   const [sprite, setSprite] = useState("");
   const [card, setCard] = useState("");
   const [pokeData, setPokeData] = useState<PokeData | null>(null);
-  const [modalVisible, setModalVisible] = useState<boolean>(false);
+  const [snModalVisible, setSnModalVisible] = useState<boolean>(false);
+  const [mcModalVisible, setMcModalVisible] = useState<boolean>(false);
   const router = useRouter();
 
   // const poke_url = "https://api.pokemontcg.io/v2/cards";
@@ -56,6 +57,10 @@ export default function Index() {
     router.push(`/sameNumber/${id}`);
   }
 
+  const handleMultipleChoiceDifficulty = (id: number) => {
+    router.push(`/multipleChoice/${id}`);
+  }
+
   return (
     // <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
     <SafeAreaView style={styles.container}>
@@ -80,20 +85,20 @@ export default function Index() {
         <Modal
           animationType="slide"
           transparent={true}
-          visible={modalVisible}
+          visible={snModalVisible}
           onRequestClose={() => {
-            setModalVisible(!modalVisible);
+            setSnModalVisible(!snModalVisible);
           }}
         >
           <View style={styles.centeredView}>
             <View style={styles.modalView}>
-              <Text style={styles.modalText}>Select the game difficulty: </Text>
+              <Text style={styles.modalText}>Select the 'Same Number?' game difficulty: </Text>
               <TextButton 
                 text="Easy" 
                 btnColor="#2196F3" 
                 onPress={() => {
                   handleSameNumberDifficulty(5);
-                  setModalVisible(!modalVisible);
+                  setSnModalVisible(!snModalVisible);
                 }} 
               />
               <TextButton 
@@ -101,7 +106,7 @@ export default function Index() {
                 btnColor="#2196F3" 
                 onPress={() => {
                   handleSameNumberDifficulty(10);
-                  setModalVisible(!modalVisible);
+                  setSnModalVisible(!snModalVisible);
                 }} 
               />
               <TextButton 
@@ -109,14 +114,14 @@ export default function Index() {
                 btnColor="#2196F3" 
                 onPress={() => {
                   handleSameNumberDifficulty(20);
-                  setModalVisible(!modalVisible);
+                  setSnModalVisible(!snModalVisible);
                 }} 
               />
               <TextButton 
                 text="Cancel" 
                 btnColor="#FF3131" 
                 onPress={() => {
-                  setModalVisible(!modalVisible);
+                  setSnModalVisible(!snModalVisible);
                 }} 
               />
             </View>
@@ -126,18 +131,63 @@ export default function Index() {
         {/* Same Number Modal Button */}
         <Pressable
           style={[styles.button, { alignItems: "center", backgroundColor: "#FF0000" }]}
-          onPress={() => setModalVisible(true)}
+          onPress={() => setSnModalVisible(true)}
         >
           <MaterialCommunityIcons name="equal-box" size={38} color={"#FFF"} />
           <Text style={styles.textStyle}>Same Number?</Text>
         </Pressable>
 
         {/* Multiple Choice Modal */}
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={mcModalVisible}
+          onRequestClose={() => {
+            setMcModalVisible(!mcModalVisible);
+          }}
+        >
+          <View style={styles.centeredView}>
+            <View style={styles.modalView}>
+              <Text style={styles.modalText}>Select the 'Multiple Choice' game difficulty: </Text>
+              <TextButton 
+                text="Easy" 
+                btnColor="#2196F3" 
+                onPress={() => {
+                  handleMultipleChoiceDifficulty(5);
+                  setMcModalVisible(!mcModalVisible);
+                }} 
+              />
+              <TextButton 
+                text="Normal" 
+                btnColor="#2196F3" 
+                onPress={() => {
+                  handleMultipleChoiceDifficulty(10);
+                  setMcModalVisible(!mcModalVisible);
+                }} 
+              />
+              <TextButton 
+                text="Hard" 
+                btnColor="#2196F3" 
+                onPress={() => {
+                  handleMultipleChoiceDifficulty(20);
+                  setMcModalVisible(!mcModalVisible);
+                }} 
+              />
+              <TextButton 
+                text="Cancel" 
+                btnColor="#FF3131" 
+                onPress={() => {
+                  setMcModalVisible(!mcModalVisible);
+                }} 
+              />
+            </View>
+          </View>
+        </Modal>
 
         {/* Multiple Choice Modal Button */}
         <Pressable
           style={[styles.button, { alignItems: "center", backgroundColor: "#3B4CCA" }]}
-          onPress={() => setModalVisible(true)}
+          onPress={() => setMcModalVisible(true)}
         >
           <MaterialCommunityIcons name="numeric-4-box-multiple" size={38} color={"#FFF"} />
           <Text style={styles.textStyle}>Multiple Choice</Text>
@@ -146,7 +196,7 @@ export default function Index() {
         {/* Search Button */}
         <Pressable
           style={[styles.button, { alignItems: "center", backgroundColor: "#FFDE00" }]}
-          onPress={() => setModalVisible(true)}
+          onPress={() => setSnModalVisible(true)}
         >
           <MaterialCommunityIcons name="toy-brick-search" size={38} color={"#FFF"} />
           <Text style={styles.textStyle}>Search</Text>

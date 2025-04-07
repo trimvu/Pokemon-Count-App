@@ -75,7 +75,7 @@ export default function SameNumber() {
             setModalStatus('incorrect-1');
         }
         setModalVisible(true);
-        reset()
+        // reset()
     }
 
     const gameLogicClose = () => {
@@ -87,7 +87,7 @@ export default function SameNumber() {
             setModalStatus('incorrect-2');
         }
         setModalVisible(true);
-        reset()
+        // reset()
     }
 
     if (isPokemonTCGLoading || isPokeAPILoading) {
@@ -124,11 +124,18 @@ export default function SameNumber() {
                         <View style={styles.modalView}>
                             <Text style={styles.modalText}>
                                 {modalStatus === 'correct' && "Correct!"}
-                                {modalStatus === 'incorrect-1' && `Incorrect! Actual count ${randomNumber}.`}
+                                {modalStatus === 'incorrect-1' && `Incorrect! Actual count: ${randomNumber}.`}
                                 {modalStatus === 'incorrect-2' && "They are actually the same!"}
                             </Text>
                             {modalStatus === 'correct' ? <SpriteViewer sprite="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/showdown/133.gif" imgWidth={100} imgHeight={100} /> : <SpriteViewer sprite="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/showdown/back/133.gif" imgWidth={100} imgHeight={100} />}
-                            <TextButton text="Next" btnColor="#00FF00" onPress={() => setModalVisible(!modalVisible)} />
+                            <TextButton 
+                                text="Next" 
+                                btnColor={modalStatus === 'correct' ? "#00FF00" : "#FF0000"}
+                                onPress={() => {
+                                    setModalVisible(!modalVisible); 
+                                    reset()}
+                                } 
+                            />
                         </View>
                     </View>
                 </Modal>

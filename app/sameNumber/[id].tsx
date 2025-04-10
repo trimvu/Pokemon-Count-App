@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, ActivityIndicator, Pressable, Modal } from "react-native";
+import { StyleSheet, Text, View, ActivityIndicator, Pressable, Modal, Dimensions } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useEffect, useState } from "react";
 import SpriteViewer from "@/components/SpriteViewer";
@@ -151,6 +151,8 @@ export default function SameNumber() {
     )
 }
 
+const { width, height } = Dimensions.get('window');
+
 const styles = StyleSheet.create({
     container: {
         flex: 1,
@@ -159,15 +161,21 @@ const styles = StyleSheet.create({
         paddingTop: 10,
     },
     footerContainer: {
-        flex: 1 / 3,
+        position: "absolute",
+        bottom: height < 860 ? -725 : -200,
+        left: 0,
+        right: 0,
         alignItems: "center",
     },
     spriteContainer: {
-        flexDirection: 'row',
+        width: "100%",
+        height: 180,
+        paddingBottom: 100, 
+        flexDirection: "row",
         flexWrap: "wrap",
-        justifyContent: 'space-around',
-        alignItems: 'center',
-        padding: 10,
+        justifyContent: "space-around",
+        alignItems: "center",
+        paddingTop: 10,
     },
     optionsRow: {
         flexDirection: "row",

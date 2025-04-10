@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, ActivityIndicator, Pressable, Modal } from "react-native";
+import { StyleSheet, Text, View, ActivityIndicator, Pressable, Modal, Dimensions } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useEffect, useState } from "react";
 import SpriteViewer from "@/components/SpriteViewer";
@@ -39,18 +39,18 @@ export default function MultipleChoice() {
     const rollD4 = () => {
         return Math.floor((Math.random() * 4) + 1);
     }
-    
+
     const assignBtnNums = (newRandomNum: number) => {
         const randomArr: number[] = [];
-    
+
         while (randomArr.length < 3) {
             const numAssign = generateRandom();
-    
+
             if (numAssign !== newRandomNum && !randomArr.includes(numAssign)) {
                 randomArr.push(numAssign);
             }
         }
-    
+
         setAnsOptions(randomArr);
     };
 
@@ -62,7 +62,7 @@ export default function MultipleChoice() {
         }
 
         let options = [...ansOptions];
-        
+
         if (die === 1) {
             setBtn1Num(randomNumber);
             setBtn2Num(options.pop() as number);
@@ -121,7 +121,7 @@ export default function MultipleChoice() {
     }
 
     return (
-        <SafeAreaView>
+        <SafeAreaView style={{ flex: 1 }}>
             <View style={styles.container}>
                 <CardViewer cardImg={pokemonTCGResponse?.cardImage} />
                 <View style={styles.spriteContainer}>
@@ -144,14 +144,14 @@ export default function MultipleChoice() {
                                 {modalStatus === 'incorrect' && `Incorrect! Actual count: ${randomNumber}`}
                             </Text>
                             {modalStatus === 'correct' ? <SpriteViewer sprite="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/showdown/133.gif" imgWidth={100} imgHeight={100} /> : <SpriteViewer sprite="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/showdown/back/133.gif" imgWidth={100} imgHeight={100} />}
-                            <TextButton 
-                                text="Next" 
+                            <TextButton
+                                text="Next"
                                 // btnColor="#00FF00" 
                                 btnColor={modalStatus === 'correct' ? "#00FF00" : "#FF0000"}
                                 onPress={() => {
-                                    setModalVisible(!modalVisible); 
+                                    setModalVisible(!modalVisible);
                                     reset()
-                                }} 
+                                }}
                             />
                         </View>
                     </View>
@@ -159,19 +159,25 @@ export default function MultipleChoice() {
 
                 <View style={styles.footerContainer}>
                     {/* <DisplayedNumber displayNumber={displayNubmer} /> */}
-                    <View style={[styles.optionsRow, { marginTop: 145 }]}>
+                    <View style={styles.optionsRow}>
                         <AnswerButton borderColor="#00008B" backgroundColor="#3B4CCA" text={btn1Num} onPress={() => handleGuess(btn1Num)} />
                         <AnswerButton borderColor="#00008B" backgroundColor="#3B4CCA" text={btn2Num} onPress={() => handleGuess(btn2Num)} />
                     </View>
-                    <View style={[styles.optionsRow, { marginTop: 90 }]}>
+                    <View style={styles.optionsRow}>
                         <AnswerButton borderColor="#00008B" backgroundColor="#3B4CCA" text={btn3Num} onPress={() => handleGuess(btn3Num)} />
                         <AnswerButton borderColor="#00008B" backgroundColor="#3B4CCA" text={btn4Num} onPress={() => handleGuess(btn4Num)} />
                     </View>
                 </View>
             </View>
+            {/* <View>
+                <Text>Width: {width}</Text>
+                <Text>Height: {height}</Text>
+            </View> */}
         </SafeAreaView>
     )
 }
+
+const { width, height } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
     container: {
@@ -181,15 +187,21 @@ const styles = StyleSheet.create({
         paddingTop: 10,
     },
     footerContainer: {
-        flex: 1 / 3,
+        position: "absolute",
+        bottom: height < 860 ? 15 : 90,
+        left: 0,
+        right: 0,
         alignItems: "center",
     },
     spriteContainer: {
-        flexDirection: 'row',
+        width: "100%",
+        height: 180,
+        paddingBottom: 100, 
+        flexDirection: "row",
         flexWrap: "wrap",
-        justifyContent: 'space-around',
-        alignItems: 'center',
-        padding: 10,
+        justifyContent: "space-around",
+        alignItems: "center",
+        paddingTop: 10,
     },
     optionsRow: {
         flexDirection: "row",

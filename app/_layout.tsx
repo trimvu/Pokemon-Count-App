@@ -8,6 +8,7 @@ export default function RootLayout() {
       <StatusBar style="dark" />
       <Stack screenOptions={{ headerShown: false }}>
         <Stack.Screen name="index" />
+        <Stack.Screen name="search" />
         <Stack.Screen name="+not-found" />
         <Stack.Screen name="soon" />
         <Stack.Screen name="sameNumber/[id]" />

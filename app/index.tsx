@@ -62,7 +62,8 @@ export default function Index() {
   }
 
   const handleSearchButton = () => {
-    router.push(`/soon`);
+    // router.push(`/soon`);
+    router.push(`/search`);
   }
 
   return (

@@ -28,7 +28,6 @@ export default function useSearchFetch({ page, searchTerm }: Props) {
                 },
             });
 
-            console.log("Fetched data for page", page);
             console.log(response.data);
 
             setResponse({

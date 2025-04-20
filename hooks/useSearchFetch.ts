@@ -5,8 +5,10 @@ const poke_url = "https://api.pokemontcg.io/v2/cards";
 const api_key = process.env.EXPO_PUBLIC_API_KEY;
 
 interface PokeData {
-    cardImage: string;
-    pokedexNumber: number | "N/A";
+    images: {
+        small: string;
+    };
+    id: string;
 }
 
 type Props = {
@@ -17,7 +19,8 @@ type Props = {
 export default function useSearchFetch({ page, searchTerm }: Props) {
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [error, setError] = useState<Error | null>(null);
-    const [response, setResponse] = useState<PokeData | null>(null);
+    const [response, setResponse] = useState<PokeData[] | null>(null);
+    const [totalCount, setTotalCount] = useState<number | null>(null);
 
     const fetchSearchResult = useCallback(async () => {
         try {
@@ -28,22 +31,21 @@ export default function useSearchFetch({ page, searchTerm }: Props) {
                 },
             });
 
-            console.log(response.data);
+            // console.log(response.data.data);
 
-            setResponse({
-                cardImage: response.data.data?.[0]?.images?.large,
-                pokedexNumber: response.data?.data?.[0]?.nationalPokedexNumbers?.[0] || "N/A",
-            });
+            setResponse(response.data.data);
+
+            setTotalCount(response.data.totalCount);
         } catch (e) {
             setError(e as Error);
         } finally {
             setIsLoading(false);
         }
-    }, [page]);
+    }, [page, searchTerm]);
 
     useEffect(() => {
         fetchSearchResult();
-    }, [page]);
+    }, [page, searchTerm]);
 
-    return { isLoading, error, response, refetch: fetchSearchResult };
+    return { isLoading, error, response, totalCount, refetch: fetchSearchResult };
 }

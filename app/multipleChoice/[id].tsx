@@ -108,7 +108,11 @@ export default function MultipleChoice() {
     }
 
     if (isPokemonTCGLoading || isPokeAPILoading) {
-        return <ActivityIndicator size="large" color="#00ff00" />
+        return (
+            <SafeAreaView style={{ flex: 1 }}>
+                <ActivityIndicator style={[styles.container, { justifyContent: 'center' }]} size="large" color="#00ff00" />
+            </SafeAreaView>
+        )
     }
 
     if (pokemonTCGError || pokeAPIError) {

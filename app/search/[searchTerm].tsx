@@ -1,18 +1,26 @@
-import { StyleSheet, View, Text, ActivityIndicator, Pressable } from "react-native";
+import { StyleSheet, View, Text, ActivityIndicator, Pressable, FlatList, StatusBar, Dimensions } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useEffect, useState } from "react";
 import { useLocalSearchParams } from "expo-router";
 import useSearchFetch from "@/hooks/useSearchFetch";
 import CardViewer from "@/components/CardViewer";
+import SearchResultCardViewer from "@/components/SearchResultCardViewer";
+import Animated, { LinearTransition } from 'react-native-reanimated'
+import DisplayedNumber from "@/components/DisplayedNumber";
+import TextButton from "@/components/TextButton";
 
 export default function SearchResult() {
     const [page, setPage] = useState<number>(1);
+    const [btnColor, setBtnColor] = useState<string>(
+        page === 1 ? "#FF3131" : "#2196F3"
+    );
     const { searchTerm } = useLocalSearchParams();
 
     const {
         isLoading,
         error,
         response,
+        totalCount,
         refetch,
     } = useSearchFetch({ page, searchTerm });
 
@@ -20,8 +28,16 @@ export default function SearchResult() {
         refetch();
     }, [page])
 
+    const loadingScreen = () => {
+        return (
+            <SafeAreaView style={{ flex: 1 }}>
+                <ActivityIndicator style={[styles.container, { justifyContent: 'center' }]} size="large" color="#00ff00" />
+            </SafeAreaView>
+        )
+    }
+
     if (isLoading) {
-        return <ActivityIndicator size="large" color="#00ff00" />
+        return loadingScreen()
     }
 
     if (error) {
@@ -33,40 +49,112 @@ export default function SearchResult() {
     }
 
     const handlePreviousBtn = () => {
-        setPage(() => page - 1);
-        refetch();
+        if (page > 1) {
+            setPage(() => page - 1);
+            setBtnColor("#2196F3");
+            refetch();
+        }
     }
 
     const handleNextBtn = () => {
-        setPage(() => page + 1);
-        refetch();
+        if (totalCount === null) return;
+
+        if (page < Math.ceil(totalCount / 10)) {
+            setPage(() => page + 1);
+            refetch();
+        }
     }
 
     return (
         <SafeAreaView style={{ flex: 1 }}>
             <View style={styles.container}>
-                <Text>
+                <Text style={styles.text}>
                     Result(s) for: {searchTerm}
                 </Text>
-                <Text>
+
+                {/* {
+                    totalCount === null ? (
+                        loadingScreen()
+                    ) : (
+                        <Text>
+                            Page: {page} of {Math.ceil(totalCount / 10)}
+                        </Text>
+                    )
+                } */}
+
+                {/* <Text>
                     Page: {page}
-                </Text>
-                <CardViewer cardImg={response?.cardImage} />
-                <Pressable onPress={handlePreviousBtn}>
-                    <Text>Previous</Text>
-                </Pressable>
-                <Pressable onPress={handleNextBtn}>
-                    <Text>Next</Text>
-                </Pressable>
+                </Text> */}
+
+                {/* <CardViewer cardImg={response?.cardImage} /> */}
+                <Animated.FlatList
+                    data={response}
+                    numColumns={2}
+                    renderItem={({ item }) => (
+                        <View style={styles.cardContainer}>
+                            <Pressable onPress={() => alert(`${item.id}`)}>
+                                <SearchResultCardViewer cardImg={item.images.small} />
+                            </Pressable>
+                        </View>
+                    )}
+                    keyExtractor={item => item.id}
+                    contentContainerStyle={{ flexGrow: 1 }}
+                // itemLayoutAnimation={LinearTransition}
+                // keyboardDismissMode='on-drag'
+                />
+
+                <View style={styles.footerContainer}>
+                    <TextButton
+                        text="Previous"
+                        btnColor={page === 1 || page === 0 ? "#808080" : "#2196F3"}
+                        onPress={handlePreviousBtn}
+                    />
+
+                    <DisplayedNumber
+                        displayNumber={
+                            totalCount === null ? (
+                                ''
+                            ) : (
+                                `${page}/${Math.ceil(totalCount / 10)}`
+                            )
+                        }
+                        style={{ marginTop: 0, marginHorizontal: 0 }}
+                    />
+
+                    <TextButton
+                        text="Next"
+                        btnColor={
+                            totalCount === null ? "#808080" : page === Math.ceil(totalCount / 10) ? "#808080" : "#2196F3"
+                        }
+                        onPress={handleNextBtn}
+                    />
+                </View>
             </View>
         </SafeAreaView>
     )
 }
+
+const { width, height } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
+        padding: StatusBar.currentHeight || 0,
+        paddingBottom: 25,
+    },
+    text: {
+        fontSize: 33,
+    },
+    cardContainer: {
+        alignContent: 'center',
+        marginHorizontal: width / 15,
+    },
+    footerContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        marginVertical: 10,
     },
 })

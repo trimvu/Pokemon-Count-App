@@ -91,7 +91,11 @@ export default function SameNumber() {
     }
 
     if (isPokemonTCGLoading || isPokeAPILoading) {
-        return <ActivityIndicator size="large" color="#00ff00" />
+        return (
+            <SafeAreaView style={{ flex: 1 }}>
+                <ActivityIndicator style={[styles.container, { justifyContent: 'center' }]} size="large" color="#00ff00" />
+            </SafeAreaView>
+        )
     }
 
     if (pokemonTCGError || pokeAPIError) {
@@ -128,13 +132,14 @@ export default function SameNumber() {
                                 {modalStatus === 'incorrect-2' && "They are actually the same!"}
                             </Text>
                             {modalStatus === 'correct' ? <SpriteViewer sprite="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/showdown/133.gif" imgWidth={100} imgHeight={100} /> : <SpriteViewer sprite="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/showdown/back/133.gif" imgWidth={100} imgHeight={100} />}
-                            <TextButton 
-                                text="Next" 
+                            <TextButton
+                                text="Next"
                                 btnColor={modalStatus === 'correct' ? "#00FF00" : "#FF0000"}
                                 onPress={() => {
-                                    setModalVisible(!modalVisible); 
-                                    reset()}
-                                } 
+                                    setModalVisible(!modalVisible);
+                                    reset()
+                                }
+                                }
                             />
                         </View>
                     </View>
@@ -170,7 +175,7 @@ const styles = StyleSheet.create({
     spriteContainer: {
         width: "100%",
         height: 180,
-        paddingBottom: 100, 
+        paddingBottom: 100,
         flexDirection: "row",
         flexWrap: "wrap",
         justifyContent: "space-around",

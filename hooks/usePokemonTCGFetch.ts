@@ -10,12 +10,13 @@ interface PokeData {
 }
 
 export default function usePokemonTCGFetch() {
-    const [isLoading, setIsLoading] = useState<boolean>(true);
+    const [isLoading, setIsLoading] = useState<boolean>(false);
     const [error, setError] = useState<Error | null>(null);
     const [response, setResponse] = useState<PokeData | null>(null);
 
     const fetchRandomCard = useCallback(async () => {
         try {
+            setIsLoading(true);
             let random = Math.floor(Math.random() * 15924);
             const response = await axios.get(`${poke_url}?pageSize=1&page=${random}&q=supertype:"Pokémon"`, {
                 headers: {

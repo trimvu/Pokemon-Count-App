@@ -1,12 +1,13 @@
-import { StyleSheet, View, Text } from "react-native";
+import { StyleSheet, View, Text, ViewStyle, StyleProp } from "react-native";
 
 type Props = {
-    displayNumber: number;
+    displayNumber: number | string;
+    style?: StyleProp<ViewStyle>;
 }
 
-export default function DisplayedNumber({ displayNumber }: Props) {
+export default function DisplayedNumber({ displayNumber, style }: Props) {
     return (
-        <View style={styles.circleButtonContainer}>
+        <View style={[styles.circleButtonContainer, style]}>
             <View style={styles.circleButton}>
                 <Text style={styles.text}>
                     {displayNumber}

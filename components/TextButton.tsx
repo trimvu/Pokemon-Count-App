@@ -27,6 +27,7 @@ const styles = StyleSheet.create({
         padding: 10,
         elevation: 2,
         margin: 10,
+        width: 100,
     },
     textStyle: {
         color: 'white',

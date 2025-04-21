@@ -21,11 +21,12 @@ export default function useSearchFetch({ page, searchTerm }: Props) {
     const [error, setError] = useState<Error | null>(null);
     const [response, setResponse] = useState<PokeData[] | null>(null);
     const [totalCount, setTotalCount] = useState<number | null>(null);
+    const [fetchedPage, setFetchedPage] = useState<number | null>(null);
 
     const fetchSearchResult = useCallback(async () => {
         try {
             setIsLoading(true);
-            const response = await axios.get(`${poke_url}?pageSize=10&page=${page}&q=supertype:"Pokémon" name:${searchTerm}`, {
+            const response = await axios.get(`${poke_url}?pageSize=10&page=${page}&q=supertype:"Pokémon" name:*${searchTerm}*`, {
                 headers: {
                     'X-Api-Key': api_key,
                 },
@@ -36,6 +37,8 @@ export default function useSearchFetch({ page, searchTerm }: Props) {
             setResponse(response.data.data);
 
             setTotalCount(response.data.totalCount);
+
+            setFetchedPage(page);
         } catch (e) {
             setError(e as Error);
         } finally {
@@ -47,5 +50,5 @@ export default function useSearchFetch({ page, searchTerm }: Props) {
         fetchSearchResult();
     }, [page, searchTerm]);
 
-    return { isLoading, error, response, totalCount, refetch: fetchSearchResult };
+    return { isLoading, error, response, totalCount, fetchedPage, refetch: fetchSearchResult };
 }

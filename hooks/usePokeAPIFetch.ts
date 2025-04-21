@@ -1,7 +1,7 @@
 import { useEffect, useState, useCallback } from "react";
 import axios from "axios";
 
-export default function usePokeAPIFetch(pokedexNumber?: number | "N/A") {
+export default function usePokeAPIFetch(pokedexNumber?: string | number | "N/A") {
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [error, setError] = useState<Error | null>(null);
     const [response, setResponse] = useState<any>(null);

@@ -1,4 +1,4 @@
-import { StyleSheet, Dimensions, View } from "react-native";
+import { StyleSheet, Dimensions, View, ActivityIndicator } from "react-native";
 import { Image } from "expo-image";
 
 type Props = {
@@ -6,6 +6,10 @@ type Props = {
 }
 
 export default function SearchResultCardViewer({ cardImg }: Props) {
+    if (!cardImg) {
+        return <ActivityIndicator />
+    }
+    
     return (
         <Image source={cardImg} style={styles.image} contentFit="contain" />
     )

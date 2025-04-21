@@ -7,9 +7,9 @@ export default function Soon() {
             <Stack.Screen options={{ title: 'Soon!' }} />
             <View style={styles.container}>
                 <Text>Coming Soon!</Text>
-                <Link href="/" style={styles.link}>
+                {/* <Link href="/" style={styles.link}>
                     <Text>Go to home screen!</Text>
-                </Link>
+                </Link> */}
             </View>
         </>
     );

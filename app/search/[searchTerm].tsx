@@ -1,7 +1,7 @@
 import { StyleSheet, View, Text, ActivityIndicator, Pressable, FlatList, StatusBar, Dimensions } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useEffect, useState } from "react";
-import { useLocalSearchParams } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import useSearchFetch from "@/hooks/useSearchFetch";
 import CardViewer from "@/components/CardViewer";
 import SearchResultCardViewer from "@/components/SearchResultCardViewer";
@@ -11,9 +11,7 @@ import TextButton from "@/components/TextButton";
 
 export default function SearchResult() {
     const [page, setPage] = useState<number>(1);
-    const [btnColor, setBtnColor] = useState<string>(
-        page === 1 ? "#FF3131" : "#2196F3"
-    );
+    const router = useRouter();
     const { searchTerm } = useLocalSearchParams();
 
     const {
@@ -21,6 +19,7 @@ export default function SearchResult() {
         error,
         response,
         totalCount,
+        fetchedPage,
         refetch,
     } = useSearchFetch({ page, searchTerm });
 
@@ -42,16 +41,17 @@ export default function SearchResult() {
 
     if (error) {
         return (
-            <View>
-                <Text>Something went wrong!</Text>
-            </View>
+            <SafeAreaView>
+                <View style={styles.container}>
+                    <Text style={styles.text}>Something went wrong!</Text>
+                </View>
+            </SafeAreaView>
         )
     }
 
     const handlePreviousBtn = () => {
         if (page > 1) {
             setPage(() => page - 1);
-            setBtnColor("#2196F3");
             refetch();
         }
     }
@@ -63,6 +63,10 @@ export default function SearchResult() {
             setPage(() => page + 1);
             refetch();
         }
+    }
+
+    const handleSearch = (cardId: string) => {
+        router.push(`/card/${cardId}`);
     }
 
     return (
@@ -87,12 +91,31 @@ export default function SearchResult() {
                 </Text> */}
 
                 {/* <CardViewer cardImg={response?.cardImage} /> */}
-                <Animated.FlatList
+
+                {fetchedPage === page && response ? (
+                    <FlatList
+                        data={response}
+                        numColumns={2}
+                        renderItem={({ item }) => (
+                            <View style={styles.cardContainer}>
+                                <Pressable onPress={() => handleSearch(item.id)}>
+                                    <SearchResultCardViewer cardImg={item.images.small} />
+                                </Pressable>
+                            </View>
+                        )}
+                        keyExtractor={item => item.id}
+                        contentContainerStyle={{ flexGrow: 1 }}
+                    />
+                ) : (
+                    loadingScreen()
+                )}
+
+                {/* <Animated.FlatList
                     data={response}
                     numColumns={2}
                     renderItem={({ item }) => (
                         <View style={styles.cardContainer}>
-                            <Pressable onPress={() => alert(`${item.id}`)}>
+                            <Pressable onPress={() => handleSearch(item.id)}>
                                 <SearchResultCardViewer cardImg={item.images.small} />
                             </Pressable>
                         </View>
@@ -101,7 +124,9 @@ export default function SearchResult() {
                     contentContainerStyle={{ flexGrow: 1 }}
                 // itemLayoutAnimation={LinearTransition}
                 // keyboardDismissMode='on-drag'
-                />
+                /> */}
+
+                {totalCount !== null && Math.ceil(totalCount / 10) === 0 ? <Text style={styles.text}>No result for: {searchTerm}</Text> : <></>}
 
                 <View style={styles.footerContainer}>
                     <TextButton
@@ -115,6 +140,10 @@ export default function SearchResult() {
                             totalCount === null ? (
                                 ''
                             ) : (
+                                Math.ceil(totalCount / 10) === 0
+                            ) ? (
+                                `0 / 0`
+                            ) : (
                                 `${page}/${Math.ceil(totalCount / 10)}`
                             )
                         }
@@ -124,7 +153,7 @@ export default function SearchResult() {
                     <TextButton
                         text="Next"
                         btnColor={
-                            totalCount === null ? "#808080" : page === Math.ceil(totalCount / 10) ? "#808080" : "#2196F3"
+                            totalCount === null ? "#808080" : page === Math.ceil(totalCount / 10) || Math.ceil(totalCount / 10) === 0 ? "#808080" : "#2196F3"
                         }
                         onPress={handleNextBtn}
                     />

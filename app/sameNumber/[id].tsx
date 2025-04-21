@@ -163,11 +163,11 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: "flex-start",
         alignItems: "center",
-        paddingTop: 10,
+        // paddingTop: 10,
     },
     footerContainer: {
         position: "absolute",
-        bottom: height < 860 ? -725 : -200,
+        bottom: height < 860 ? -675 : -200,
         left: 0,
         right: 0,
         alignItems: "center",

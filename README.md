@@ -14,6 +14,9 @@
 
 ## Version
 
+### 1.0.2
+Patch to update issue of card and sprite loading after guessing.
+
 ### 1.0.1
 Patch to update styling for larger phones.
 

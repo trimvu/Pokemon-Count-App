@@ -14,6 +14,9 @@
 
 ## Version
 
+### 1.1.0
+Minor update. Now includes a `Search` feature and the ability to view a specific card.
+
 ### 1.0.2
 Patch to update issue of card and sprite loading after guessing.
 

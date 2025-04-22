@@ -2,7 +2,7 @@
   "expo": {
     "name": "Pokémon Count!",
     "slug": "PokemonCount",
-    "version": "1.1.0",
+    "version": "1.1.1",
     "orientation": "portrait",
     "icon": "./assets/images/133.png",
     "scheme": "myapp",

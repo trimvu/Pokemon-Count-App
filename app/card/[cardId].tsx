@@ -3,8 +3,9 @@ import EvolutionSpriteViewer from "@/components/EvolutionSpriteViewer";
 import TextButton from "@/components/TextButton";
 import useGetCardById from "@/hooks/useGetCardById";
 import usePokeAPIFetch from "@/hooks/usePokeAPIFetch";
+import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { StyleSheet, View, Text, ActivityIndicator, Animated, PanResponder, FlatList, Pressable, Dimensions, Modal, StatusBar } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -12,11 +13,14 @@ const { width, height } = Dimensions.get('window');
 
 export default function SearchedCard() {
     const [modalVisible, setModalVisible] = useState<boolean>(false);
+    const [pokeId, setPokeId] = useState<number | null>(null);
+    const { pokeName } = usePokeAPIFetch(pokeId);
     const router = useRouter();
     const { cardId } = useLocalSearchParams();
     const pan = useRef(new Animated.ValueXY()).current;
     const panResponder = useRef(
         PanResponder.create({
+            onStartShouldSetPanResponder: () => true,
             onMoveShouldSetPanResponder: () => true,
             onPanResponderMove: Animated.event([null, { dx: pan.x, dy: pan.y }], { useNativeDriver: false }),
             onPanResponderRelease: () => {
@@ -34,11 +38,16 @@ export default function SearchedCard() {
         response,
         evolvesFrom,
         evolvesTo,
+        pokedexNumbers,
     } = useGetCardById({ cardId });
 
-    const eFrom = usePokeAPIFetch(evolvesFrom);
+    useEffect(() => {
+        if (pokeName) {
+            router.push(`/search/${pokeName}`);
+        }
+    }, [pokeName])
 
-    if (isLoading || eFrom.isLoading) {
+    if (isLoading) {
         return (
             <SafeAreaView style={{ flex: 1 }}>
                 <ActivityIndicator style={[styles.container, { justifyContent: 'center' }]} size="large" color="#00ff00" />
@@ -46,7 +55,7 @@ export default function SearchedCard() {
         )
     }
 
-    if (error || eFrom.error) {
+    if (error) {
         return (
             <SafeAreaView>
                 <View style={styles.container}>
@@ -56,8 +65,14 @@ export default function SearchedCard() {
         )
     }
 
-    const handleSpriteClick = (searchTerm: string) => {
-        router.push(`/search/${searchTerm}`);
+    const handleSpriteClick = (searchTerm: string | number) => {
+        if (typeof searchTerm === "number") {
+            setPokeId(searchTerm);
+        }
+
+        if (typeof searchTerm === "string") {
+            router.push(`/search/${searchTerm}`);
+        }
     }
 
     return (
@@ -83,7 +98,15 @@ export default function SearchedCard() {
                 >
                     <View style={styles.centeredView}>
                         <View style={styles.modalView}>
-                            <CardViewer cardImg={response?.cardImage} style={{ height: height * 0.7, width: width * 0.9 }} />
+                            <Animated.View
+                                style={{
+                                    transform: [{ translateX: pan.x }, { translateY: pan.y }],
+                                    zIndex: 999,
+                                }}
+                                {...panResponder.panHandlers}
+                            >
+                                <CardViewer cardImg={response?.cardImage} style={{ height: height * 0.7, width: width * 0.9 }} />
+                            </Animated.View>
                             <TextButton
                                 text="Close"
                                 btnColor="#FF3131"
@@ -102,13 +125,15 @@ export default function SearchedCard() {
                     }}
                     {...panResponder.panHandlers}
                 >
-                    <Pressable onPress={() => setModalVisible(true)}>
-                        <CardViewer cardImg={response?.cardImage} />
-                    </Pressable>
+                    <CardViewer cardImg={response?.cardImage} />
                 </Animated.View>
 
-                <Text>Click to enlarge card</Text>
-                <Text>Hold to drag card</Text>
+                <Pressable onPress={() => setModalVisible(true)}>
+                    <MaterialCommunityIcons name="magnify-plus-outline" size={38} color={"#000"} />
+                </Pressable>
+
+                <Text>Click magnifying glass to enlarge card</Text>
+                <Text>Hold card to drag card</Text>
 
                 {
                     evolvesFrom !== undefined ? (
@@ -142,17 +167,18 @@ export default function SearchedCard() {
                     )
                 }
 
-                {
-                    response !== null ? (
+                <FlatList
+                    data={pokedexNumbers}
+                    numColumns={4}
+                    renderItem={({ item }) => (
                         <View>
-                            <Pressable onPress={() => handleSpriteClick(response.name)}>
-                                <EvolutionSpriteViewer imgWidth={height < 860 ? 75 : 100} imgHeight={height < 860 ? 75 : 100} sprite={response.name} />
+                            <Pressable onPress={() => handleSpriteClick(item)}>
+                            <EvolutionSpriteViewer imgWidth={height < 860 ? 75 : 100} imgHeight={height < 860 ? 75 : 100} sprite={item} />
                             </Pressable>
                         </View>
-                    ) : (
-                        <></>
-                    )
-                }
+                    )}
+                    keyExtractor={item => item.toString()}
+                />
 
                 {
                     evolvesTo !== undefined ? (

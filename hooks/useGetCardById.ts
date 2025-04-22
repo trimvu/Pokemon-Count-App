@@ -25,6 +25,7 @@ export default function useGetCardById({ cardId }: Props) {
     const [response, setResponse] = useState<PokeData | null>(null);
     const [evolvesFrom, setEvolvesFrom] = useState<string>();
     const [evolvesTo, setEvolvesTo] = useState<string[] | null>(null);
+    const [pokedexNumbers, setPokedexNumbers] = useState<number[] | null>(null);
 
     const fetchCard = useCallback(async () => {
         try {
@@ -45,6 +46,7 @@ export default function useGetCardById({ cardId }: Props) {
 
             setEvolvesFrom(response.data.data?.evolvesFrom);
             setEvolvesTo(response.data.data?.evolvesTo);
+            setPokedexNumbers(response.data.data?.nationalPokedexNumbers);
         } catch (e) {
             setError(e as Error);
         } finally {
@@ -56,5 +58,5 @@ export default function useGetCardById({ cardId }: Props) {
         fetchCard();
     }, []);
 
-    return { isLoading, error, response, evolvesFrom, evolvesTo };
+    return { isLoading, error, response, evolvesFrom, evolvesTo, pokedexNumbers };
 }

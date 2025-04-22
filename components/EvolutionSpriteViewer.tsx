@@ -6,7 +6,7 @@ import SpriteViewer from "./SpriteViewer";
 type Props = {
     imgWidth: number;
     imgHeight: number;
-    sprite: string;
+    sprite: string | number;
 }
 
 export default function EvolutionSpriteViewer({ imgWidth, imgHeight, sprite }: Props) {

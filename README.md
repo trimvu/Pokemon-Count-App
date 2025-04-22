@@ -14,6 +14,9 @@
 
 ## Version
 
+### 1.1.1
+Patch that fixed issues regarding a card view after selecting from the search result. It changeg the method of enlarging a card. Also fixed issue of sprites not rendering from cards with more unique names. Cards that have more than one (1) Pokémon now show both Pokémon sprites as well. 
+
 ### 1.1.0
 Minor update. Now includes a `Search` feature and the ability to view a specific card.
 
@@ -42,7 +45,7 @@ Expo's instruction on how to install the application on Android devices:
 
 `Pokémon Count!` is a mobile application created for my niece to play and learn at the same time. The application has two interactive game modes: `Same Number?` and `Multiple Choice`. Both game modes have three levels of difficulty: Easy, Normal, and Hard. In `Same Number?`, users are required to count the amount of Pokémon sprites on the screen and compare with the number displayed on the screen whether the amount are the same or not. In `Multiple Choice`, users are also required to count the amount of Pokémon sprites on the screen, then choose one of four options for the correct answer. As for the difficulty, Easy mode has up to 5 sprites, Normal has up to 10 sprites, while Hard has up to 20 sprites on the screen.
 
-A `Search` feature is coming soon! Users will be able to search for their favorite Pokémon and view all the available cards. 
+A `Search` feature was later implemented in Version 1.1.0 with the ability for users to be able to search for their favorite Pokémon (by name) and view all the available cards. Upon selecting a card, users can interact with the interactive card view. Move the card around the screen. Enlarge the card. View sprites of the current Pokémon along with what it evolved from or evolves to (if possible). Clicking sprites will search that Pokémon's cards.
 
 ## Technology Stack
 
@@ -67,10 +70,11 @@ A `Search` feature is coming soon! Users will be able to search for their favori
 * Displaying the difficulty options through Modals
 * Displaying the results of user actions through Modals
 * Changing an answer's button color when users hold the button down for visual feedback
+* A `Search` feature to search and view a specific Pokémon and its cards
 
 ## Potential Future Goal
 
-* A `Search` feature to search for a specific Pokémon and its cards
+* A more robust `Search` feature that allows users to search by their own conditions
 * A `Favorites` feature that will allow users to favorite specific cards
 * A backend to allow users to save favorites.
 

@@ -1,10 +1,11 @@
 import { useEffect, useState, useCallback } from "react";
 import axios from "axios";
 
-export default function usePokeAPIFetch(pokedexNumber?: string | number | "N/A") {
+export default function usePokeAPIFetch(pokedexNumber?: string | number | null | "N/A") {
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [error, setError] = useState<Error | null>(null);
     const [response, setResponse] = useState<any>(null);
+    const [pokeName, setPokeName] = useState<string | null>(null);
 
     const fetchSprite = useCallback(async () => {
         try {
@@ -17,6 +18,7 @@ export default function usePokeAPIFetch(pokedexNumber?: string | number | "N/A")
             } else {
                 const response = await axios.get(`https://pokeapi.co/api/v2/pokemon/${pokedexNumber}`)
                 setResponse(response.data?.sprites?.front_default)
+                setPokeName(response.data?.name);
             }
         } catch (e) {
             setError(e as Error);
@@ -29,5 +31,5 @@ export default function usePokeAPIFetch(pokedexNumber?: string | number | "N/A")
         fetchSprite();
     }, [pokedexNumber]);
 
-    return { isLoading, error, response };
+    return { isLoading, error, response, pokeName };
 }
